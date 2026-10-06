@@ -37,6 +37,10 @@ jobs:
           rm -rf source
           mkdir -p source
           unzip -q -o KupAutoBezMiny_Android_Source_v0.1.zip -d source
+                - name: Fix PrintManager import
+        run: |
+          sed -i 's/import android.app.PrintManager;/import android.print.PrintManager;/' source/KupAutoBezMiny_Android/app/src/main/java/pl/kupautobezminy/app/MainActivity.jav
+          
 
       - name: Build debug APK
         working-directory: source/KupAutoBezMiny_Android
