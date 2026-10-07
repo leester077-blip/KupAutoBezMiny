@@ -1,4 +1,4 @@
-name: Build Kup Auto Bez Miny APK
+name: Build Kup Auto Bez Miny SIGNED APK
 
 on:
   workflow_dispatch:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  build-debug-apk:
+  build-release-apk:
     runs-on: ubuntu-latest
 
     steps:
@@ -42,13 +42,28 @@ jobs:
         run: |
           sed -i 's/import android.app.PrintManager;/import android.print.PrintManager;/' source/KupAutoBezMiny_Android/app/src/main/java/pl/kupautobezminy/app/MainActivity.java
 
-      - name: Build debug APK
-        working-directory: source/KupAutoBezMiny_Android
-        run: gradle :app:assembleDebug --stacktrace
+      - name: Restore permanent signing key
+        env:
+          KABM_KEYSTORE_BASE64: ${{ secrets.KABM_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KABM_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/kabm-release.jks"
 
-      - name: Upload APK artifact
+      - name: Build signed release APK
+        working-directory: source/KupAutoBezMiny_Android
+        env:
+          KABM_KEYSTORE_PATH: ${{ runner.temp }}/kabm-release.jks
+          KABM_KEYSTORE_PASSWORD: ${{ secrets.KABM_KEYSTORE_PASSWORD }}
+          KABM_KEY_ALIAS: ${{ secrets.KABM_KEY_ALIAS }}
+          KABM_KEY_PASSWORD: ${{ secrets.KABM_KEY_PASSWORD }}
+        run: gradle :app:assembleRelease --stacktrace
+
+      - name: Verify APK signature
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs source/KupAutoBezMiny_Android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload signed APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: KupAutoBezMiny-test-apk
-          path: source/KupAutoBezMiny_Android/app/build/outputs/apk/debug/app-debug.apk
+          name: KupAutoBezMiny-SIGNED-release-apk
+          path: source/KupAutoBezMiny_Android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
