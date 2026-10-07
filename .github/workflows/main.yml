@@ -53,13 +53,13 @@ jobs:
         env:
           KABM_KEYSTORE_PATH: ${{ runner.temp }}/kabm-release.jks
           KABM_KEYSTORE_PASSWORD: ${{ secrets.KABM_KEYSTORE_PASSWORD }}
-          KABM_KEY_ALIAS: ${{ secrets.KABM_KEY_ALIAS }}
+          KABM_KEY_ALIAS: kabm-release
           KABM_KEY_PASSWORD: ${{ secrets.KABM_KEY_PASSWORD }}
         run: gradle :app:assembleRelease --stacktrace
 
       - name: Verify APK signature
         run: |
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs source/KupAutoBezMiny_Android/app/build/outputs/apk/release/app-release.apk
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs source/KupAutmoBezMiny_Android/app/build/outputs/apk/release/app-release.apk
 
       - name: Upload signed APK artifact
         uses: actions/upload-artifact@v4
