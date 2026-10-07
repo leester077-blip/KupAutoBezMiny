@@ -59,7 +59,7 @@ jobs:
 
       - name: Verify APK signature
         run: |
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs source/KupAutmoBezMiny_Android/app/build/outputs/apk/release/app-release.apk
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs source/KupAutoBezMiny_Android/app/build/outputs/apk/release/app-release.apk
 
       - name: Upload signed APK artifact
         uses: actions/upload-artifact@v4
