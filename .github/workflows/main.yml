@@ -36,7 +36,7 @@ jobs:
         run: |
           rm -rf source
           mkdir -p source
-          unzip -q -o KupAutoBezMiny_Android_Source_v0.9.2_ENGINE_PICKER_UX.zip -d source
+          unzip -q -o KupAutoBezMiny_Android_Source_v0.10_PRODUCT_POLISH.zip -d source
 
       - name: Fix PrintManager import
         run: |
